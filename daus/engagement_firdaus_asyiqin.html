@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f3ede5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>We're Getting Engaged!</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Open+Sans&display=swap" rel="stylesheet">
+
+  <!-- iOS App Icon (optional) -->
+  <link rel="apple-touch-icon" href="img1.jpg" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+      background: url('img1.jpg') no-repeat center center;
+background-attachment: scroll;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 0;
+      min-height: 100vh;
+
+      /* dreamy fade-in and pan effect */
+      opacity: 0;
+      animation: bgFadeIn 3s ease-in-out forwards, bgPan 30s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgFadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes bgPan {
+      0% {
+        background-position: center center;
+      }
+      100% {
+        background-position: center 55%;
+      }
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3); /* more transparent */
+      z-index: -1;
+    }
+
+    .content-box {
+      background: rgba(255, 255, 255, 0.5); /* softer white box */
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+      width: 100%;
+      z-index: 1;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: #5D3A00;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      color: #777;
+    }
+
+    #countdown {
+      font-size: 2rem;
+      margin-top: 1rem;
+      background: #f3ede5;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      color: #5D3A00;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .message {
+      max-width: 600px;
+      margin-top: 2rem;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    #music-toggle {
+      margin-top: 1.5rem;
+      background: #fff7f0;
+      border: none;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    #music-toggle:hover {
+      background: #f3ede5;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+
+      #countdown {
+        font-size: 1.5rem;
+        padding: 0.8rem 1.5rem;
+      }
+
+      .message {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+      }
+
+      #countdown {
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .message {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="content-box">
+    <h1>Firdaus & Asyiqin</h1>
+    <h2>We're Getting Engaged!</h2>
+
+    <div id="countdown">Loading countdown...</div>
+
+    <p class="message">
+      My dearest Asyiqin, knowing that we're soon to be engaged fills my heart with immense joy and gratitude.
+      Thank you for choosing me, for your unwavering love, and for the beautiful future we’re about to build together.
+    </p>
+
+    <button id="music-toggle" aria-label="Toggle music" title="Play/Pause Music">🔊</button>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bg-music" loop>
+    <source src="song.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // iOS autoplay workaround
+    window.addEventListener("touchstart", function () {
+  if (!isPlaying) {
+    bgMusic.play().then(() => {
+      isPlaying = true;
+      musicToggle.textContent = "⏸️";
+    }).catch((e) => console.log("Autoplay failed:", e));
+  }
+}, { once: true })
+
+    // Countdown logic
+    const countdown = document.getElementById("countdown");
+    const eventDate = new Date("May 3, 2025 12:00:00").getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+
+      if (distance < 0) {
+        countdown.innerHTML = "We're engaged! 💍";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdown.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    };
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Play/pause music toggle
+    const bgMusic = document.getElementById("bg-music");
+    const musicToggle = document.getElementById("music-toggle");
+    let isPlaying = false;
+
+    musicToggle.addEventListener("click", () => {
+      if (isPlaying) {
+        bgMusic.pause();
+        musicToggle.textContent = "🔊";
+      } else {
+        bgMusic.play();
+        musicToggle.textContent = "⏸️";
+      }
+      isPlaying = !isPlaying;
+    });
+  </script>
+</body>
+</html>
